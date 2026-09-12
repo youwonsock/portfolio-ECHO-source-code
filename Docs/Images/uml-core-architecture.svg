@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" role="img" aria-labelledby="title desc">
+  <title id="title">ECHO Core Manager Architecture</title>
+  <desc id="desc">GameManager owns and coordinates ObjectPool, SoundManager, UIManager, DataManager, and SceneManagerEX.</desc>
+  <defs>
+    <marker id="diamond" markerWidth="14" markerHeight="10" refX="2" refY="5" orient="auto">
+      <path d="M 0 5 L 5 1 L 10 5 L 5 9 Z" fill="#ffffff" stroke="#334155" stroke-width="1.5"/>
+    </marker>
+    <style>
+      .title{font:700 24px Arial,'Noto Sans KR',sans-serif;fill:#0f172a}
+      .box{fill:#ffffff;stroke:#334155;stroke-width:2;rx:8}
+      .head{fill:#dbeafe;stroke:#334155;stroke-width:2}
+      .name{font:700 17px Consolas,monospace;fill:#0f172a;text-anchor:middle}
+      .role{font:14px Arial,'Noto Sans KR',sans-serif;fill:#475569;text-anchor:middle}
+      .line{fill:none;stroke:#334155;stroke-width:2}
+      .label{font:13px Arial,'Noto Sans KR',sans-serif;fill:#475569;text-anchor:middle}
+    </style>
+  </defs>
+  <rect width="1100" height="430" fill="#f8fafc"/>
+  <text class="title" x="550" y="38" text-anchor="middle">ECHO Core Manager Architecture</text>
+
+  <rect class="box" x="410" y="70" width="280" height="90"/>
+  <path class="head" d="M418 70 H682 Q690 70 690 78 V108 H410 V78 Q410 70 418 70 Z"/>
+  <text class="name" x="550" y="95">GameManager</text>
+  <text class="role" x="550" y="135">Initialization · Lifetime · Coordination</text>
+
+  <path class="line" d="M550 160 V205 H120 V245" marker-start="url(#diamond)"/>
+  <path class="line" d="M550 205 H335 V245"/>
+  <path class="line" d="M550 205 V245"/>
+  <path class="line" d="M550 205 H765 V245"/>
+  <path class="line" d="M550 205 H980 V245"/>
+  <text class="label" x="550" y="195">owns</text>
+
+  <g>
+    <rect class="box" x="25" y="245" width="190" height="110"/>
+    <path class="head" d="M33 245 H207 Q215 245 215 253 V285 H25 V253 Q25 245 33 245 Z"/>
+    <text class="name" x="120" y="271">ObjectPool</text>
+    <text class="role" x="120" y="315">Echo Instance</text>
+    <text class="role" x="120" y="337">Acquire · Return</text>
+  </g>
+  <g>
+    <rect class="box" x="240" y="245" width="190" height="110"/>
+    <path class="head" d="M248 245 H422 Q430 245 430 253 V285 H240 V253 Q240 245 248 245 Z"/>
+    <text class="name" x="335" y="271">SoundManager</text>
+    <text class="role" x="335" y="315">BGM · SFX</text>
+    <text class="role" x="335" y="337">Playback · Reuse</text>
+  </g>
+  <g>
+    <rect class="box" x="455" y="245" width="190" height="110"/>
+    <path class="head" d="M463 245 H637 Q645 245 645 253 V285 H455 V253 Q455 245 463 245 Z"/>
+    <text class="name" x="550" y="271">UIManager</text>
+    <text class="role" x="550" y="315">Scene · Popup UI</text>
+    <text class="role" x="550" y="337">Create · Sort · Release</text>
+  </g>
+  <g>
+    <rect class="box" x="670" y="245" width="190" height="110"/>
+    <path class="head" d="M678 245 H852 Q860 245 860 253 V285 H670 V253 Q670 245 678 245 Z"/>
+    <text class="name" x="765" y="271">DataManager</text>
+    <text class="role" x="765" y="315">Settings Data</text>
+    <text class="role" x="765" y="337">Save · Load</text>
+  </g>
+  <g>
+    <rect class="box" x="885" y="245" width="190" height="110"/>
+    <path class="head" d="M893 245 H1067 Q1075 245 1075 253 V285 H885 V253 Q885 245 893 245 Z"/>
+    <text class="name" x="980" y="271">SceneManagerEX</text>
+    <text class="role" x="980" y="315">UniTask-based</text>
+    <text class="role" x="980" y="337">Async Scene Load</text>
+  </g>
+  <text class="label" x="550" y="395">◆ Composition — GameManager owns each subsystem lifetime.</text>
+</svg>
