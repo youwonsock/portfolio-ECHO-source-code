@@ -121,7 +121,7 @@ UML 원본은 [`UML.plantuml`](UML.plantuml)에서 관리합니다.
 - 순환 ID를 사용해 최대 25개의 Echo 위치·반지름·발생 주체를 Shader 배열에 기록합니다.
 - 확산 시간이 끝나면 Echo를 비활성화하고 Object Pool에 반환합니다.
 
-> **스크린샷 플레이스홀더:** 플레이어와 NPC Echo가 동시에 확산되는 장면
+> **UML 플레이스홀더:** Echo 발생 → Object Pool 대여 → 반지름 갱신 → Shader 전달 → Pool 반환 시퀀스
 
 ### Ground Echo Shader
 
@@ -169,7 +169,7 @@ Echo 범위에 들어온 숫자·도형 오브젝트를 강조해 퍼즐 단서�
 - 비활성화가 확인된 객체를 UniTask로 대기한 뒤 해당 Queue에 반환합니다.
 - 유효한 객체를 만들 수 없는 경우를 위해 Null Object를 사용합니다.
 
-> **스크린샷 플레이스홀더:** Echo Object Pool 대여·회수 과정
+> **코드 샘플 플레이스홀더:** `ObjectPool.Get()`·`Return()`과 `IPoolingAble` 기반 대여·회수 구현
 
 ### Sound Manager
 
@@ -186,7 +186,7 @@ Echo 범위에 들어온 숫자·도형 오브젝트를 강조해 퍼즐 단서�
 - 풀을 초과해 임시 생성한 3D AudioSource는 재생 완료 후 제거합니다.
 - `CancellationTokenSource`로 대기 중인 비동기 작업의 종료 시점을 관리합니다.
 
-> **스크린샷 플레이스홀더:** Audio Mixer 및 3D SFX 동작 화면
+> **코드 샘플 플레이스홀더:** 3D SFX 재생과 AudioSource의 비동기 회수 구현
 
 ### UI 관리와 Presenter
 
@@ -219,7 +219,7 @@ UI 생성·정렬·해제를 중앙화하고 플레이어 로직과 UI 표시를
 - 게임플레이 설정에서 카메라 FOV와 마우스 감도를 처리합니다.
 - Android에서는 PC 전용 디스플레이 설정 UI를 조건부로 제외합니다.
 
-> **스크린샷 플레이스홀더:** 그래픽·사운드·게임플레이 설정 화면
+> **UML 플레이스홀더:** `DataManager`와 `ISave`·`ISettingData` 구현 객체의 저장·불러오기 관계
 
 ### 비동기 씬 전환과 Update 관리
 
@@ -235,7 +235,7 @@ UI 생성·정렬·해제를 중앙화하고 플레이어 로직과 UI 표시를
 - `IUpdateable` 구현 객체가 필요한 Update, FixedUpdate, LateUpdate 작업만 구독합니다.
 - Echo와 QTE UI는 활성화 상태에 맞춰 Update 작업을 등록·해제합니다.
 
-> **스크린샷 플레이스홀더:** Loading 씬과 대상 씬 전환 화면
+> **코드 샘플 플레이스홀더:** UniTask 기반 Loading 씬 → 대상 씬 비동기 전환 구현
 
 ## 저장소 구성
 
