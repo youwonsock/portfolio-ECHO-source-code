@@ -83,7 +83,7 @@ BGM과 SFX 채널을 분리하고 2D·3D 재생을 지원합니다. SFX용 Audio
 
 UML 원본은 [`UML.plantuml`](UML.plantuml)에서 관리합니다.
 
-> **이미지 플레이스홀더:** `UML.plantuml`을 렌더링한 클래스 구조 이미지
+<img src="Docs/Images/uml-core-architecture.svg" alt="ECHO 핵심 매니저 구조 UML" width="100%">
 
 핵심 관계는 다음과 같습니다.
 
@@ -121,7 +121,7 @@ UML 원본은 [`UML.plantuml`](UML.plantuml)에서 관리합니다.
 - 순환 ID를 사용해 최대 25개의 Echo 위치·반지름·발생 주체를 Shader 배열에 기록합니다.
 - 확산 시간이 끝나면 Echo를 비활성화하고 Object Pool에 반환합니다.
 
-> **UML 플레이스홀더:** Echo 발생 → Object Pool 대여 → 반지름 갱신 → Shader 전달 → Pool 반환 시퀀스
+<img src="Docs/Images/uml-echo-flow.svg" alt="Echo 파동 처리 시퀀스 UML" width="100%">
 
 ### Ground Echo Shader
 
@@ -169,7 +169,50 @@ Echo 범위에 들어온 숫자·도형 오브젝트를 강조해 퍼즐 단서�
 - 비활성화가 확인된 객체를 UniTask로 대기한 뒤 해당 Queue에 반환합니다.
 - 유효한 객체를 만들 수 없는 경우를 위해 Null Object를 사용합니다.
 
-> **코드 샘플 플레이스홀더:** `ObjectPool.Get()`·`Return()`과 `IPoolingAble` 기반 대여·회수 구현
+<details>
+<summary><b>ObjectPool 대여·회수 핵심 코드</b></summary>
+
+```csharp
+private async UniTaskVoid ReturnPoolingAble(IPoolingAble poolingAble)
+{
+    await UniTask.WaitUntil(
+        () => poolingAble.IsActivate() == false,
+        PlayerLoopTiming.FixedUpdate,
+        disableCancletoken.Token);
+
+    if (queueDict.TryGetValue(poolingAble.GetPoolingType(), out var queue))
+    {
+        poolingAble.Deactivate();
+        queue.Enqueue(poolingAble);
+    }
+}
+
+public IPoolingAble Get(PoolingType type)
+{
+    if (queueDict.TryGetValue(type, out var queue))
+    {
+        IPoolingAble poolingAble = queue.Count > 0
+            ? queue.Dequeue()
+            : CreatePoolingAble(type);
+
+        return poolingAble;
+    }
+
+    return null;
+}
+
+public void Return(IPoolingAble poolingAble)
+{
+    if (poolingAble.GetPoolingType() == PoolingType.MAX)
+        return;
+
+    ReturnPoolingAble(poolingAble).Forget();
+}
+```
+
+[전체 코드: `Manager/ObjectPool.cs`](Manager/ObjectPool.cs)
+
+</details>
 
 ### Sound Manager
 
@@ -186,7 +229,62 @@ Echo 범위에 들어온 숫자·도형 오브젝트를 강조해 퍼즐 단서�
 - 풀을 초과해 임시 생성한 3D AudioSource는 재생 완료 후 제거합니다.
 - `CancellationTokenSource`로 대기 중인 비동기 작업의 종료 시점을 관리합니다.
 
-> **코드 샘플 플레이스홀더:** 3D SFX 재생과 AudioSource의 비동기 회수 구현
+<details>
+<summary><b>3D SFX 재생·회수 핵심 코드</b></summary>
+
+```csharp
+private async UniTaskVoid ReturnSFX(AudioSource source)
+{
+    await UniTask.WaitUntil(
+        () => source.isPlaying == false,
+        PlayerLoopTiming.FixedUpdate,
+        disableCancletoken.Token);
+
+    source.spatialBlend = 1;
+    SFXAudioSourceQueue.Enqueue(source);
+}
+
+private async UniTaskVoid DestroyTempSFX(AudioSource source)
+{
+    await UniTask.WaitUntil(
+        () => source.isPlaying == false,
+        PlayerLoopTiming.FixedUpdate,
+        disableCancletoken.Token);
+
+    GameObject.Destroy(source.gameObject);
+}
+
+public void PlaySound3D(
+    AudioClip audioClip,
+    Transform transform,
+    SoundType type = SoundType.SFX,
+    float volume = 1,
+    float pitch = 1.0f)
+{
+    if (audioClip == null || type != SoundType.SFX)
+        return;
+
+    bool isTemp = !SFXAudioSourceQueue.TryDequeue(out AudioSource audioSource);
+
+    if (isTemp)
+        CreateSFXAudioSourceObject(out audioSource);
+
+    audioSource.pitch = pitch;
+    audioSource.volume = volume;
+    audioSource.clip = audioClip;
+    audioSource.transform.position = transform.position;
+    audioSource.Play();
+
+    if (isTemp)
+        DestroyTempSFX(audioSource).Forget();
+    else
+        ReturnSFX(audioSource).Forget();
+}
+```
+
+[전체 코드: `Manager/SoundManager.cs`](Manager/SoundManager.cs)
+
+</details>
 
 ### UI 관리와 Presenter
 
@@ -219,7 +317,7 @@ UI 생성·정렬·해제를 중앙화하고 플레이어 로직과 UI 표시를
 - 게임플레이 설정에서 카메라 FOV와 마우스 감도를 처리합니다.
 - Android에서는 PC 전용 디스플레이 설정 UI를 조건부로 제외합니다.
 
-> **UML 플레이스홀더:** `DataManager`와 `ISave`·`ISettingData` 구현 객체의 저장·불러오기 관계
+<img src="Docs/Images/uml-settings-flow.svg" alt="설정 저장 시스템 관계 UML" width="100%">
 
 ### 비동기 씬 전환과 Update 관리
 
@@ -235,7 +333,47 @@ UI 생성·정렬·해제를 중앙화하고 플레이어 로직과 UI 표시를
 - `IUpdateable` 구현 객체가 필요한 Update, FixedUpdate, LateUpdate 작업만 구독합니다.
 - Echo와 QTE UI는 활성화 상태에 맞춰 Update 작업을 등록·해제합니다.
 
-> **코드 샘플 플레이스홀더:** UniTask 기반 Loading 씬 → 대상 씬 비동기 전환 구현
+<details>
+<summary><b>UniTask 기반 비동기 씬 전환 핵심 코드</b></summary>
+
+```csharp
+private async UniTaskVoid LoadSceneAsync(SceneType type)
+{
+    SceneManager.LoadScene((int)SceneType.Loading);
+    await UniTask.WaitUntil(
+        () => GetSceneType() == SceneType.Loading);
+
+    AsyncOperation operation =
+        SceneManager.LoadSceneAsync((int)type);
+    operation.allowSceneActivation = false;
+
+    GC.Collect();
+    GC.WaitForPendingFinalizers();
+
+    while (!operation.isDone)
+    {
+        if (operation.progress >= 0.9f)
+            operation.allowSceneActivation = true;
+
+        await UniTask.Yield();
+    }
+
+    isLoadScene = false;
+}
+
+public void LoadScene(SceneType type)
+{
+    if (isLoadScene)
+        return;
+
+    isLoadScene = true;
+    LoadSceneAsync(type).Forget();
+}
+```
+
+[전체 코드: `Manager/SceneManagerEX.cs`](Manager/SceneManagerEX.cs)
+
+</details>
 
 ## 저장소 구성
 
