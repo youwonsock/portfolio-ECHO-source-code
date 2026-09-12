@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="540" viewBox="0 0 1050 540" role="img" aria-labelledby="title desc">
+  <title id="title">Settings Persistence Relationships</title>
+  <desc id="desc">Relationships among DataManager, ISave, ISettingData, and the three settings UI implementations.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0 0 L10 4 L0 8 Z" fill="#334155"/></marker>
+    <marker id="triangle" markerWidth="13" markerHeight="11" refX="11" refY="5.5" orient="auto"><path d="M1 1 L11 5.5 L1 10 Z" fill="#ffffff" stroke="#334155" stroke-width="1.4"/></marker>
+    <style>
+      .title{font:700 24px Arial,'Noto Sans KR',sans-serif;fill:#0f172a}
+      .box{fill:#ffffff;stroke:#334155;stroke-width:2;rx:8}
+      .interface{fill:#ede9fe;stroke:#334155;stroke-width:2;rx:8}
+      .classHead{fill:#dbeafe;stroke:#334155;stroke-width:2}
+      .name{font:700 16px Consolas,monospace;fill:#0f172a;text-anchor:middle}
+      .stereo{font:12px Consolas,monospace;fill:#6d28d9;text-anchor:middle}
+      .role{font:13px Arial,'Noto Sans KR',sans-serif;fill:#475569;text-anchor:middle}
+      .dep{stroke:#334155;stroke-width:2;marker-end:url(#arrow)}
+      .realize{fill:none;stroke:#334155;stroke-width:1.8;stroke-dasharray:7 5;marker-end:url(#triangle)}
+      .label{font:13px Arial,'Noto Sans KR',sans-serif;fill:#475569;text-anchor:middle}
+    </style>
+  </defs>
+  <rect width="1050" height="540" fill="#f8fafc"/>
+  <text class="title" x="525" y="36" text-anchor="middle">Settings Persistence Relationships</text>
+
+  <rect class="box" x="65" y="95" width="240" height="115"/>
+  <path class="classHead" d="M73 95 H297 Q305 95 305 103 V135 H65 V103 Q65 95 73 95 Z"/>
+  <text class="name" x="185" y="121">DataManager</text>
+  <text class="role" x="185" y="162">AddSaveable · Save · Load</text>
+  <text class="role" x="185" y="187">persistentDataPath</text>
+
+  <rect class="interface" x="405" y="80" width="220" height="130"/>
+  <text class="stereo" x="515" y="107">&lt;&lt;interface&gt;&gt;</text>
+  <text class="name" x="515" y="134">ISave</text>
+  <line x1="405" y1="146" x2="625" y2="146" stroke="#334155"/>
+  <text class="role" x="515" y="172">Save(path)</text>
+  <text class="role" x="515" y="194">Load(path)</text>
+
+  <rect class="interface" x="745" y="80" width="240" height="130"/>
+  <text class="stereo" x="865" y="107">&lt;&lt;interface&gt;&gt;</text>
+  <text class="name" x="865" y="134">ISettingData</text>
+  <line x1="745" y1="146" x2="985" y2="146" stroke="#334155"/>
+  <text class="role" x="865" y="181">LoadSettingData()</text>
+
+  <line class="dep" x1="305" y1="145" x2="397" y2="145"/>
+  <text class="label" x="351" y="132">register · invoke</text>
+
+  <g>
+    <rect class="box" x="95" y="350" width="250" height="95"/>
+    <path class="classHead" d="M103 350 H337 Q345 350 345 358 V388 H95 V358 Q95 350 103 350 Z"/>
+    <text class="name" x="220" y="376">GraphicSettingUI</text>
+    <text class="role" x="220" y="417">Resolution · FPS · Quality</text>
+  </g>
+  <g>
+    <rect class="box" x="400" y="350" width="250" height="95"/>
+    <path class="classHead" d="M408 350 H642 Q650 350 650 358 V388 H400 V358 Q400 350 408 350 Z"/>
+    <text class="name" x="525" y="376">SoundSettingUI</text>
+    <text class="role" x="525" y="417">Master · BGM · SFX</text>
+  </g>
+  <g>
+    <rect class="box" x="705" y="350" width="250" height="95"/>
+    <path class="classHead" d="M713 350 H947 Q955 350 955 358 V388 H705 V358 Q705 350 713 350 Z"/>
+    <text class="name" x="830" y="376">GameplaySettingUI</text>
+    <text class="role" x="830" y="417">FOV · 마우스 감도</text>
+  </g>
+
+  <path class="realize" d="M220 350 V290 H480 V218"/>
+  <path class="realize" d="M525 350 V218"/>
+  <path class="realize" d="M830 350 V290 H550 V218"/>
+  <path class="realize" d="M220 350 V260 H825 V218"/>
+  <path class="realize" d="M525 350 V275 H865 V218"/>
+  <path class="realize" d="M830 350 V218"/>
+
+  <text class="label" x="525" y="500">Each settings UI implements persistence and startup application contracts.</text>
+</svg>
